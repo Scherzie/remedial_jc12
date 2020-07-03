@@ -130,22 +130,22 @@ class Home extends Component{
             }
         })
     }
-
-    // deleteAllData = () => {
-    //     Axios.delete(`${API_URL}remedial/delete-all`)
-    //         .then(()=>{
-    //             Axios.get(`${API_URL}remedial`)
-    //             .then(res=>{
-    //                 this.setState({dataremedial:res.data})
-    //             })
-    //             .catch(error=>{
-    //                 console.log(error)
-    //             })
-    //         })
-    //         .catch(err=>{
-    //             console.log(err)
-    //         })
-    // }
+    
+    clearData = () => {
+        this.state.dataremedial.forEach(val => {
+            Axios.delete(`${API_URL}remedial/${val.id}`)
+                .then((res) => {
+                    console.log(res)
+                    Axios.get(`${API_URL}remedial`)
+                        .then((res) => {
+                            this.setState({ dataremedial: res.data })
+                        })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        })
+    }
 
     renderData = () => {
         var dataFilter = this.state.dataremedial.filter((val) => {
@@ -246,6 +246,7 @@ class Home extends Component{
                 <div className='row'>
                     <div className='col-md-4 mb-4'>
                         <button onClick={()=>this.setState({modalAdd:true})} className="btn btn-info p-2 mt-3" style={{fontSize:'14px'}}>Add Data</button>
+                        <button className="btn btn-danger p-2 mt-3" onClick={this.clearData}>Clear Data</button>
                     </div>
                 </div>
                 <table className='table mb-4'>
@@ -260,11 +261,6 @@ class Home extends Component{
                     </thead>
                     <tbody>
                         {this.renderData()}
-                        {
-                            this.state.dataremedial.length > 0 ?
-                            <input type='button' className='btn btn-danger' value='Delete All Data' onClick={() => this.setState({dataremedial : []})}/>
-                            : null
-                        }
                     </tbody>
                 </table>
             </div>
