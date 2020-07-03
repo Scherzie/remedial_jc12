@@ -12,6 +12,7 @@ class Home extends Component{
         indexedit:-1,
         idEdit:-1,
         idDelete:-1,
+        filter:-1
     }
 
     componentDidMount () {
@@ -146,48 +147,49 @@ class Home extends Component{
     //         })
     // }
 
-    // filterData=()=>{
-    //     Axios.get(`${API_URL}/remedial?pekerjaan=${this.state.dataremedial.pekerjaan}`)
-    //     .then((res)=>{
-    //     this.setState({dataremedial:res.data.pekerjaan})
-    //     this.renderFilter()
-    //     }).catch((err)=>{
-    //         console.log(err)
-    //     })
-    // }
+    renderData = () => {
+        var dataFilter = this.state.dataremedial.filter((val) => {
+            return val.pekerjaan == this.state.filter || this.state.filter < 0
+        })
+        var jsx = dataFilter.map((val, index) => {
+            if(this.state.selectedData === index){
+                return (
+                    <tr key={index}>
+                        <td>{index+1}</td>
+                        <td><input type='text' className='form-control' placeholder={val.nama} ref='namaEdit'/></td>
+                        <td><input type='number' className='form-control' placeholder={val.usia} ref='usiaEdit'/></td>
+                        <td><input type='text' className='form-control' placeholder={val.pekerjaan} ref='pekerjaanEdit'/></td>
+                        <td>
+                            <input type='button' className='form-control btn-info' value='Save' onClick={() => this.onBtnSave(index)}/>
+                            <input type='button' className='form-control btn-danger' value='Cancel' onClick={this.onBtnCancelClick} />
+                        </td>
+                    </tr>
+                )
+            } else{
+                return (
+                    <tr key={index}>
+                        <td>{index+1}</td>
+                        <td>{val.nama}</td>
+                        <td>{val.usia}</td>
+                        <td>{val.pekerjaan}</td>
+                        <td>
+                            <input type='button' className='btn btn-info' value='Edit' onClick={() => this.editHandler(index)}/>
+                            <input type='button' className='btn btn-danger' value='Delete' onClick={() => this.deleteData(index)}/>
+                        </td>
+                    </tr>
+                )
+            }
+        })
+        return jsx
+    }
 
-    // onFilterClick=(e)=>{
-    //     var filter=e.target.value
-    //     this.renderFilter()
-    //     this.filterData(null,filter)
-    // }
-
-    // renderFilter = () =>{
-    //     const {dataremedial,activefilter}=this.state
-    //     return dataremedial.map((val,index)=>{
-    //         return(
-    //             <div key={index}>
-    //                 <input type='button' color="grey" size='sm' value={val.id} onClick={this.onFilterClick} active={parseInt(activefilter)=== val.id}>{val.nama}</input>
-    //             </div>
-    //         )
-    //     })
-    // }
-
-    renderData = () =>{
-        return this.state.dataremedial.map((val, index)=>{
-            return(
-                <tr key={index}>
-                    <td>{index+1}</td>
-                    <td>{val.nama}</td>
-                    <td>{val.usia}</td>
-                    <td>{val.pekerjaan}</td>
-                    <td>
-                        <div className='col-md-6'> <input onClick={()=>this.onBtnEdit(index)} type='button' className='form-control btn-success' value='Edit' /> </div>
-                        <div className='col-md-6'> <input onClick={()=>this.btnDelete(index)} type='button' className='form-control btn-danger' value='Delete' /> </div>
-                    </td>
-                </tr>
+    renderPekerjaan = () => {
+        var jsx = this.state.dataremedial.map((val) => {
+            return (
+                <option value={val.pekerjaan}>{val.pekerjaan}</option>
             )
         })
+        return jsx
     }
 
     render(){
@@ -208,7 +210,10 @@ class Home extends Component{
                 <h1>SOAL 1</h1>
                 <div className='row'>
                     <div className='col-md-4 mb-4'>
-                        {/* {this.renderFilter()} */}
+                    <select ref='dropdown' className='form-control' onChange={() => this.setState({filter : this.refs.dropdown.value})}>
+                            <option value='-1'>Filter By Pekerjaan</option>
+                            {this.renderPekerjaan()}
+                        </select>
                     </div>
                 </div>
                 {
@@ -241,7 +246,6 @@ class Home extends Component{
                 <div className='row'>
                     <div className='col-md-4 mb-4'>
                         <button onClick={()=>this.setState({modalAdd:true})} className="btn btn-info p-2 mt-3" style={{fontSize:'14px'}}>Add Data</button>
-                        {/* <button onClick={this.deleteAllData} className="btn btn-danger p-2 mt-3" style={{fontSize:'14px'}}>Delete All </button> */}
                     </div>
                 </div>
                 <table className='table mb-4'>
@@ -256,6 +260,11 @@ class Home extends Component{
                     </thead>
                     <tbody>
                         {this.renderData()}
+                        {
+                            this.state.dataremedial.length > 0 ?
+                            <input type='button' className='btn btn-danger' value='Delete All Data' onClick={() => this.setState({dataremedial : []})}/>
+                            : null
+                        }
                     </tbody>
                 </table>
             </div>
