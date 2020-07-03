@@ -1,0 +1,28 @@
+{
+  "remedial": [
+    {
+      "nama": "dian",
+      "usia": "26",
+      "pekerjaan": "programmer",
+      "id": 1
+    },
+    {
+      "nama": "budi",
+      "usia": "30",
+      "pekerjaan": "ceo",
+      "id": 2
+    },
+    {
+      "nama": "siti",
+      "usia": "28",
+      "pekerjaan": "artis",
+      "id": 3
+    },
+    {
+      "nama": "zie",
+      "usia": "22",
+      "pekerjaan": "barista",
+      "id": 4
+    }
+  ]
+}
